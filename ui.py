@@ -142,7 +142,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # ---------- ВАЖНО: правильная иконка и имя на панели задач ----------
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("MrKhaimi.MagmaKey.1.0")
 
         self.config = Config()
@@ -186,7 +185,6 @@ class MainWindow(QMainWindow):
         self.history = []
         self.password_widgets = []
 
-        # ---------- Три строки с паролями ----------
         for i in range(3):
             hbox = QHBoxLayout()
             label = QLabel(f"Пароль {i+1}:")
@@ -237,7 +235,6 @@ class MainWindow(QMainWindow):
             content_layout.addWidget(strength_bar)
             self.password_widgets.append((field, strength_bar, vis_btn))
 
-        # ---------- Настройки ----------
         length_layout = QHBoxLayout()
         length_lbl = QLabel("Длина:")
         length_lbl.setStyleSheet("color: #ecf0f1; background: transparent; border: none;")
@@ -254,7 +251,6 @@ class MainWindow(QMainWindow):
         length_layout.addWidget(self.length_value)
         content_layout.addLayout(length_layout)
 
-        # ---------- Флажки с рамками ----------
         checks_layout = QVBoxLayout()
         self.use_upper_cb = QCheckBox("Заглавные буквы (A-Z)")
         self.use_lower_cb = QCheckBox("Строчные буквы (a-z)")
@@ -300,7 +296,6 @@ class MainWindow(QMainWindow):
         self.use_special_cb.setChecked(self.config.get("use_special", bool))
         content_layout.addLayout(checks_layout)
 
-        # ---------- Кнопки действий ----------
         btn_row1 = QHBoxLayout()
         gen_btn = QPushButton("ГЕНЕРИРОВАТЬ")
         gen_btn.setStyleSheet(
@@ -353,7 +348,6 @@ class MainWindow(QMainWindow):
         btn_row2.addWidget(export_btn)
         content_layout.addLayout(btn_row2)
 
-        # ---------- ПОДПИСЬ (заметная) ----------
         signature = QLabel("by MrKhaimi")
         signature.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
         signature.setStyleSheet("""
@@ -370,7 +364,10 @@ class MainWindow(QMainWindow):
 
         self.generate_passwords()
 
-    # ---------- Слоты ----------
+        self.show()
+        self.hide()
+        self.show()
+
     def on_length_changed(self, value):
         self.config.save_slider("length", value)
 
