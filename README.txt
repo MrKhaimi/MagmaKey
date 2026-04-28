@@ -2,8 +2,6 @@
 
 Генератор надёжных паролей с лавовой анимацией и неоновым дизайном.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
 ---
 
 ## Возможности
