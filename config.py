@@ -11,7 +11,9 @@ class Config:
             "use_upper": True,
             "use_lower": True,
             "use_digits": True,
-            "use_special": True
+            "use_special": True,
+            "theme": "amber",   # "amber" или "cold"
+            "sound": True       # вкл/выкл звук копирования
         }
 
     def get(self, key, type=str):
