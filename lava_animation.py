@@ -1,5 +1,7 @@
-import math
-import random
+#!/usr/bin/env python3
+# Copyright © 2026, MrKhaimi Все права защищены.
+
+import math, random
 from PyQt6.QtCore import Qt, QTimer, QRectF, QPointF
 from PyQt6.QtGui import QPainter, QBrush, QRadialGradient, QColor
 from PyQt6.QtWidgets import QWidget
