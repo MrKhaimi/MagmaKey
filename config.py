@@ -1,8 +1,8 @@
-from PyQt6.QtCore import QSettings
+from kivy.storage.jsonstore import JsonStore
 
 class Config:
     def __init__(self):
-        self.settings = QSettings("MagmaKey", "MagmaKeyApp")
+        self.store = JsonStore('magmakey_config.json')
         self.defaults = {
             "length": 16,
             "use_upper": True,
@@ -11,21 +11,11 @@ class Config:
             "use_special": True
         }
 
-    def get(self, key, type=str):
-        val = self.settings.value(key, self.defaults.get(key))
-        if type == bool:
-            if isinstance(val, str):
-                return val.lower() == 'true'
-            return bool(val)
-        if type == int:
-            return int(val)
-        return val
+    def get(self, key):
+        if self.store.exists(key):
+            val = self.store.get(key)[key]
+            return val
+        return self.defaults.get(key)
 
     def set(self, key, value):
-        self.settings.setValue(key, value)
-
-    def save_checkbox(self, key, state):
-        self.set(key, bool(state))
-
-    def save_slider(self, key, value):
-        self.set(key, int(value))
+        self.store.put(key, **{key: value})

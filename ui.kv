@@ -1,0 +1,149 @@
+#:import hex kivy.utils.get_color_from_hex
+
+<ClickableTextInput@TextInput>:
+    readonly: True
+    background_color: hex("#14161a")
+    foreground_color: hex("#f39c12")
+    cursor_color: hex("#f39c12")
+    font_size: 18
+    on_touch_down: if self.collide_point(*args[1].pos) and args[1].button == 'left': app.copy_password(self)
+
+<PasswordField@BoxLayout>:
+    orientation: 'horizontal'
+    spacing: 5
+    Label:
+        text: f"Пароль {self.parent.index+1}:"
+        color: hex("#ecf0f1")
+        size_hint_x: 0.2
+    ClickableTextInput:
+        id: pwd_input
+        password: not root.show_password
+    Button:
+        text: '📋'
+        size_hint_x: None
+        width: 40
+        background_color: hex("#14161a")
+        color: hex("#f39c12")
+        on_press: app.copy_password(pwd_input)
+    Button:
+        text: '🙈' if root.show_password else '👁'
+        size_hint_x: None
+        width: 40
+        background_color: hex("#14161a")
+        color: hex("#f39c12")
+        on_press: root.show_password = not root.show_password
+
+<StrengthBar@BoxLayout>:
+    orientation: 'horizontal'
+    spacing: 5
+    Label:
+        text: root.label
+        color: root.label_color
+        size_hint_x: None
+        width: 120
+    ProgressBar:
+        value: root.value
+        max: 100
+        background_color: hex("#14161a")
+        color: root.bar_color
+
+<CheckRow@BoxLayout>:
+    orientation: 'horizontal'
+    CheckBox:
+        active: root.active
+        color: hex("#f39c12")
+        on_active: root.callback(self.active)
+    Label:
+        text: root.text
+        color: hex("#ecf0f1")
+
+Root:
+    BoxLayout:
+        orientation: 'vertical'
+        LavaBackground:
+            id: lava
+            size_hint_y: 0.3
+        ScrollView:
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 20
+                spacing: 10
+                size_hint_y: None
+                height: self.minimum_height
+                canvas.before:
+                    Color:
+                        rgba: hex("#0b0c10")
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                Label:
+                    text: "MAGMAKEY"
+                    font_size: 32
+                    bold: True
+                    color: hex("#f39c12")
+                    size_hint_y: None
+                    height: 50
+                Label:
+                    text: "Надёжные пароли для вашей безопасности"
+                    font_size: 14
+                    color: hex("#e67e22")
+                    size_hint_y: None
+                    height: 30
+                BoxLayout:
+                    orientation: 'vertical'
+                    id: passwords_section
+                BoxLayout:
+                    orientation: 'horizontal'
+                    spacing: 10
+                    Label:
+                        text: "Длина:"
+                        color: hex("#ecf0f1")
+                        size_hint_x: 0.2
+                    Slider:
+                        id: length_slider
+                        min: 4
+                        max: 128
+                        value: 16
+                        on_value: app.update_length_label(self.value)
+                    Label:
+                        id: length_label
+                        text: "16"
+                        color: hex("#f39c12")
+                        size_hint_x: 0.1
+                BoxLayout:
+                    orientation: 'vertical'
+                    id: checks_section
+                BoxLayout:
+                    orientation: 'horizontal'
+                    spacing: 10
+                    Button:
+                        text: "ГЕНЕРИРОВАТЬ"
+                        background_color: hex("#14161a")
+                        color: hex("#f39c12")
+                        on_press: app.generate_passwords()
+                    Button:
+                        text: "ИСТОРИЯ"
+                        background_color: hex("#14161a")
+                        color: hex("#f39c12")
+                        on_press: app.show_history()
+                BoxLayout:
+                    orientation: 'horizontal'
+                    spacing: 10
+                    Button:
+                        text: "ПРОВЕРИТЬ СВОЙ ПАРОЛЬ"
+                        background_color: hex("#14161a")
+                        color: hex("#e67e22")
+                        on_press: app.open_password_checker()
+                    Button:
+                        text: "💾 СОХРАНИТЬ"
+                        background_color: hex("#14161a")
+                        color: hex("#27ae60")
+                        on_press: app.export_passwords()
+                Label:
+                    text: "by MrKhaimi"
+                    font_size: 20
+                    bold: True
+                    color: hex("#f39c12")
+                    halign: 'right'
+                    size_hint_y: None
+                    height: 40
