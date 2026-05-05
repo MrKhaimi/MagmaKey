@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# Copyright © 2026, MrKhaimi Все права защищены.
+
 import secrets
 import string
 import math
