@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# Copyright © 2026, MrKhaimi Все права защищены.
+
 import sys, os, ctypes
 from datetime import datetime
 from PyQt6.QtCore import Qt, QTimer
@@ -348,6 +351,7 @@ class MainWindow(QMainWindow):
         btn_row2.addWidget(export_btn)
         content_layout.addLayout(btn_row2)
 
+        # ---------- ВОДЯНОЙ ЗНАК ----------
         signature = QLabel("by MrKhaimi")
         signature.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
         signature.setStyleSheet("""
@@ -360,14 +364,22 @@ class MainWindow(QMainWindow):
                 border: none;
             }
         """)
+        self.watermark = signature                    # сохраняем как атрибут для проверки
         content_layout.addWidget(signature, alignment=Qt.AlignmentFlag.AlignRight)
 
         self.generate_passwords()
+
+        # ---------- ПРОВЕРКА ЦЕЛОСТНОСТИ ВОДЯНОГО ЗНАКА ----------
+        if not hasattr(self, 'watermark') or self.watermark.text() != "by MrKhaimi":
+            QMessageBox.critical(self, "Ошибка целостности",
+                                 "Обнаружено нарушение защиты. Программа не может быть запущена.")
+            sys.exit(1)
 
         self.show()
         self.hide()
         self.show()
 
+    # ... остальные методы без изменений ...
     def on_length_changed(self, value):
         self.config.save_slider("length", value)
 
