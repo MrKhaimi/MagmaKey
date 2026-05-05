@@ -7,11 +7,12 @@ from PyQt6.QtGui import QPainter, QBrush, QRadialGradient, QColor
 from PyQt6.QtWidgets import QWidget
 
 class LavaBlob:
-    """Одна тёплая «капля» лавы."""
-    def __init__(self, canvas_width, canvas_height):
+    """Одна капля лавы (янтарная или холодная)."""
+    def __init__(self, canvas_width, canvas_height, theme="amber"):
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
-        self.hue = random.randint(15, 45)
+        self.theme = theme
+        self.hue = random.randint(15, 45) if theme == "amber" else random.randint(190, 240)
         self.reset(start_from_bottom=False)
 
     def reset(self, start_from_bottom=True):
@@ -38,11 +39,11 @@ class LavaBlob:
             self.wave_amplitude = random.uniform(15, 35)
             self.wave_frequency = random.uniform(0.01, 0.025)
             self.phase = random.uniform(0, 2 * math.pi)
-            self.hue = random.randint(15, 45)
+            self.hue = random.randint(15, 45) if self.theme == "amber" else random.randint(190, 240)
 
 
 class LavaBackground(QWidget):
-    """Фон с анимированными тёплыми пузырями."""
+    """Фон с анимированными пузырями, поддерживает две темы."""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAutoFillBackground(True)
@@ -50,6 +51,7 @@ class LavaBackground(QWidget):
         p.setColor(self.backgroundRole(), QColor(11, 12, 16))
         self.setPalette(p)
 
+        self.theme = "amber"
         self.blobs = []
         self.blob_count = 8
         self.flash_intensity = 0.0
@@ -59,12 +61,26 @@ class LavaBackground(QWidget):
         self.timer.timeout.connect(self.animate)
         self.timer.start(45)
 
+    def set_theme(self, theme):
+        """Переключает цветовую палитру пузырей."""
+        if theme == self.theme:
+            return
+        self.theme = theme
+        self.blobs.clear()
+        w, h = self.width(), self.height()
+        if w > 0 and h > 0:
+            for _ in range(self.blob_count):
+                blob = LavaBlob(w, h, theme)
+                blob.reset(start_from_bottom=False)
+                self.blobs.append(blob)
+        self.update()
+
     def resizeEvent(self, event):
         self.blobs.clear()
         w, h = self.width(), self.height()
         if w > 0 and h > 0:
             for _ in range(self.blob_count):
-                blob = LavaBlob(w, h)
+                blob = LavaBlob(w, h, self.theme)
                 blob.reset(start_from_bottom=False)
                 self.blobs.append(blob)
         super().resizeEvent(event)
