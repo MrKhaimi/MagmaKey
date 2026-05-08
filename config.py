@@ -12,8 +12,9 @@ class Config:
             "use_lower": True,
             "use_digits": True,
             "use_special": True,
-            "theme": "amber",   # "amber" или "cold"
-            "sound": True       # вкл/выкл звук копирования
+            "theme": "amber",
+            "sound": True,
+            "incognito": False       # ← новый ключ
         }
 
     def get(self, key, type=str):
