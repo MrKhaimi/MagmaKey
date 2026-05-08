@@ -5,7 +5,6 @@ import secrets
 import string
 import math
 
-# Список из 300 русских существительных для запоминающихся фраз
 WORD_LIST = [
     "август", "авиа", "автор", "агент", "актив", "алмаз", "альфа", "анализ", "арена", "архив",
     "база", "баланс", "банк", "бар", "башня", "бег", "берег", "билет", "блок", "блюдо",
@@ -39,6 +38,28 @@ WORD_LIST = [
     "шорох", "штаб", "шум", "щель", "щит", "эра", "эхо", "юг", "яблоко", "яма"
 ]
 
+COMMON_PASSWORDS = {
+    "123456", "password", "123456789", "12345678", "12345",
+    "1234567", "qwerty", "abc123", "password1", "123123",
+    "admin", "letmein", "monkey", "dragon", "master",
+    "1234", "1234567890", "qwerty123", "123", "111111",
+    "iloveyou", "trustno1", "sunshine", "princess", "welcome",
+    "football", "shadow", "michael", "654321", "qwertyuiop",
+    "1q2w3e4r", "123321", "password123", "123qwe", "121212",
+    "qazwsx", "0", "1qaz2wsx", "qwe123", "superman",
+    "batman", "starwars", "hello", "charlie", "donald",
+    "jordan", "maggie", "buster", "hunter", "robert",
+    "william", "richard", "george", "thomas", "christopher",
+    "daniel", "matthew", "anthony", "andrew", "joshua",
+    "jennifer", "michelle", "amanda", "nicole", "jessica",
+    "password!", "admin123", "letmein123", "qwerty1", "password12",
+    "passw0rd", "root", "toor", "1234qwer", "1qazxsw2",
+    "qwer1234", "qwerty12345", "zxcvbnm", "asdfghjkl", "lolkek",
+    "cheburashka", "medved", "vorona", "kotik", "sobaka",
+    "parol", "secret", "login", "access", "masterkey"
+}
+
+
 class PasswordGenerator:
     @staticmethod
     def generate(length=16, use_upper=True, use_lower=True, use_digits=True, use_special=True):
@@ -62,27 +83,27 @@ class PasswordGenerator:
 
     @staticmethod
     def generate_phrase(num_words=4, separator="-"):
-        """Генерирует запоминающуюся фразу из нескольких слов."""
         if num_words < 3:
             num_words = 3
         elif num_words > 8:
             num_words = 8
-        # криптостойкий выбор слов
         words = [secrets.choice(WORD_LIST) for _ in range(num_words)]
         phrase = separator.join(words)
-        # алфавит для оценки – это сами слова плюс разделитель
-        char_pool = " " + separator   # для оценки энтропии будем считать длину = количество слов, мощность = размер словаря
-        return phrase, char_pool, len(WORD_LIST)   # третий элемент – размер словаря
+        char_pool = " " + separator
+        return phrase, char_pool, len(WORD_LIST)
+
+    @staticmethod
+    def is_common(password):
+        """Проверяет, входит ли пароль в список распространённых (утечек)."""
+        return password.lower() in COMMON_PASSWORDS
 
 
 class StrengthEvaluator:
     @staticmethod
     def evaluate(password, char_pool, wordlist_size=None):
-        """Оценка энтропии. Если передан wordlist_size, считаем фразу."""
         if not password:
             return 0.0, "Низкая"
         if wordlist_size:
-            # количество слов определяем по числу разделителей + 1
             parts = password.split("-") if "-" in password else [password]
             L = len(parts)
             R = wordlist_size
@@ -103,7 +124,6 @@ class StrengthEvaluator:
 
     @staticmethod
     def crack_time(password, char_pool, wordlist_size=None):
-        """Время взлома фразы или пароля."""
         if not password:
             return "Невозможно оценить"
         if wordlist_size:
@@ -116,7 +136,7 @@ class StrengthEvaluator:
             R = len(char_pool)
             L = len(password)
             combinations = R ** L
-        seconds = combinations / 1_000_000_000   # 1 млрд/сек GPU
+        seconds = combinations / 1_000_000_000
         if seconds < 60:
             return f"Взлом: → {int(seconds)} сек"
         elif seconds < 3600:
@@ -134,3 +154,26 @@ class StrengthEvaluator:
                 return f"Взлом: → {seconds / 31536000:.0f} лет"
             else:
                 return f"Взлом: → {seconds / 31536000:.1f} лет"
+
+    @staticmethod
+    def analyze(password):
+        """Возвращает список замечаний по слабым местам пароля."""
+        issues = []
+        if len(password) < 8:
+            issues.append("Слишком короткий (минимум 8 символов)")
+        if not any(c.isupper() for c in password):
+            issues.append("Нет заглавных букв (A-Z)")
+        if not any(c.islower() for c in password):
+            issues.append("Нет строчных букв (a-z)")
+        if not any(c.isdigit() for c in password):
+            issues.append("Нет цифр (0-9)")
+        if not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):
+            issues.append("Нет специальных символов")
+        for i in range(len(password) - 2):
+            if password[i] == password[i+1] == password[i+2]:
+                issues.append("Повторяющиеся символы")
+                break
+        # Проверка по словарю утечек
+        if PasswordGenerator.is_common(password):
+            issues.append("Обнаружен в словаре утечек!")
+        return issues
