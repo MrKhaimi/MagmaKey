@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 # Copyright © 2026, MrKhaimi Все права защищены.
 
-import sys, os, ctypes, winsound
+import sys, os, ctypes, winsound, io
 from datetime import datetime
+import qrcode
+from PIL import Image
+
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QSlider, QCheckBox,
@@ -48,8 +51,8 @@ class PasswordCheckerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Проверка пароля")
-        self.setMinimumWidth(500)
-        self.resize(500, 250)
+        self.setMinimumWidth(550)
+        self.resize(550, 350)
         self.setStyleSheet("""
             QDialog {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -87,7 +90,7 @@ class PasswordCheckerDialog(QDialog):
         """)
 
         layout = QVBoxLayout(self)
-        layout.setSpacing(15)
+        layout.setSpacing(10)
 
         title = QLabel("Введите ваш пароль для проверки")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -106,6 +109,11 @@ class PasswordCheckerDialog(QDialog):
         self.strength_bar.setFormat("Введите пароль")
         layout.addWidget(self.strength_bar)
 
+        self.analysis_label = QLabel("")
+        self.analysis_label.setWordWrap(True)
+        self.analysis_label.setStyleSheet("font-size: 13px; padding: 6px;")
+        layout.addWidget(self.analysis_label)
+
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
@@ -116,6 +124,7 @@ class PasswordCheckerDialog(QDialog):
         if not text:
             self.strength_bar.setValue(0)
             self.strength_bar.setFormat("Введите пароль")
+            self.analysis_label.setText("")
             return
         has_lower = any(c.islower() for c in text)
         has_upper = any(c.isupper() for c in text)
@@ -132,12 +141,30 @@ class PasswordCheckerDialog(QDialog):
         entropy, label = self.evaluator.evaluate(text, pool)
         p = {"Низкая":25, "Средняя":50, "Высокая":75, "Максимальная":100}[label]
         c = {"Низкая":"#c0392b", "Средняя":"#f1c40f", "Высокая":"#f39c12", "Максимальная":"#27ae60"}[label]
+
+        if PasswordGenerator.is_common(text):
+            label = "В словаре утечек!"
+            p = 0
+            c = "#ff4444"
+
         self.strength_bar.setValue(p)
         self.strength_bar.setFormat(label)
         self.strength_bar.setStyleSheet(
             f"QProgressBar {{ background: rgba(20,20,25,200); border: 1px solid #f39c12; "
             f"color: #ecf0f1; text-align: center; border-radius: 4px; }}"
             f"QProgressBar::chunk {{ background: {c}; border-radius: 4px; }}"
+        )
+
+        issues = self.evaluator.analyze(text)
+        if issues:
+            lines = ["<span style='color:#ff6666;'>⚠</span> " + issue for issue in issues]
+            analysis_text = "<br>".join(lines)
+        else:
+            analysis_text = "<span style='color:#27ae60; font-weight:bold;'>✓ Пароль надёжный</span>"
+        self.analysis_label.setText(analysis_text)
+        self.analysis_label.setStyleSheet(
+            "font-size: 13px; padding: 6px; background: transparent;"
+            "border: 1px solid #f39c12; border-radius: 4px;"
         )
 
 
@@ -152,10 +179,10 @@ class MainWindow(QMainWindow):
         self.current_theme = self.config.get("theme")
         self.sound_enabled = self.config.get("sound", bool)
         self.phrase_mode = False
+        self.incognito_mode = self.config.get("incognito", bool)   # ← загрузка инкогнито
 
         self.setWindowTitle("MagmaKey")
-        # ---------- РАСШИРЕННОЕ ОКНО ----------
-        self.setMinimumSize(700, 950)   # было 680x800, теперь больше места по вертикали
+        self.setMinimumSize(700, 950)
         self.setWindowIcon(QIcon("magmakey.ico"))
 
         self.background = LavaBackground()
@@ -177,7 +204,7 @@ class MainWindow(QMainWindow):
         base_layout.addWidget(self.content_frame)
 
         content_layout = QVBoxLayout(self.content_frame)
-        content_layout.setSpacing(8)   # немного уменьшил зазор, чтобы плотнее сидело
+        content_layout.setSpacing(8)
 
         title = QLabel("MAGMAKEY")
         title.setFont(QFont("Segoe UI", 28, QFont.Weight.Bold))
@@ -218,6 +245,16 @@ class MainWindow(QMainWindow):
             )
             copy_btn.clicked.connect(lambda _, f=field: self.copy_with_sound(f))
 
+            qr_btn = QPushButton("QR")
+            qr_btn.setToolTip("Показать QR‑код этого пароля")
+            qr_btn.setFixedWidth(40)
+            qr_btn.setStyleSheet(
+                "background: rgba(20, 20, 25, 180); color: #f39c12; border: 1px solid #f39c12; "
+                "font-size: 14px; font-weight: bold; border-radius: 6px;"
+                "QPushButton:hover { background: #f39c12; color: #0b0c10; }"
+            )
+            qr_btn.clicked.connect(lambda _, f=field: self.show_qr(f))
+
             vis_btn = QPushButton("🙈")
             vis_btn.setToolTip("Скрыть / показать пароль")
             vis_btn.setFixedWidth(40)
@@ -231,6 +268,7 @@ class MainWindow(QMainWindow):
             hbox.addWidget(label)
             hbox.addWidget(field, 1)
             hbox.addWidget(copy_btn)
+            hbox.addWidget(qr_btn)
             hbox.addWidget(vis_btn)
             content_layout.addLayout(hbox)
 
@@ -252,7 +290,7 @@ class MainWindow(QMainWindow):
 
             self.password_widgets.append((field, strength_bar, vis_btn, crack_label))
 
-        # ---------- ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА ----------
+        # Переключатель режима
         mode_switch_layout = QHBoxLayout()
         self.mode_label = QLabel("Режим:")
         self.mode_label.setStyleSheet("color: #ecf0f1; background: transparent; border: none;")
@@ -270,7 +308,7 @@ class MainWindow(QMainWindow):
         mode_switch_layout.addStretch()
         content_layout.addLayout(mode_switch_layout)
 
-        # ---------- НАСТРОЙКИ ДЛИНЫ (ОБЫЧНЫЙ РЕЖИМ) ----------
+        # Длина (обычный режим)
         self.length_layout = QHBoxLayout()
         length_lbl = QLabel("Длина:")
         length_lbl.setStyleSheet("color: #ecf0f1; background: transparent; border: none;")
@@ -286,7 +324,7 @@ class MainWindow(QMainWindow):
         self.length_layout.addWidget(self.length_value)
         content_layout.addLayout(self.length_layout)
 
-        # ---------- НАСТРОЙКИ СЛОВ (РЕЖИМ ФРАЗ) ----------
+        # Слова (режим фраз)
         self.phrase_layout = QHBoxLayout()
         phrase_lbl = QLabel("Слов:")
         phrase_lbl.setStyleSheet("color: #ecf0f1; background: transparent; border: none;")
@@ -302,7 +340,7 @@ class MainWindow(QMainWindow):
         self.phrase_layout.setEnabled(False)
         content_layout.addLayout(self.phrase_layout)
 
-        # ---------- ЧЕКБОКСЫ (ОБЫЧНЫЙ РЕЖИМ) ----------
+        # Чекбоксы
         self.checks_layout = QVBoxLayout()
         self.use_upper_cb = QCheckBox("Заглавные буквы (A-Z)")
         self.use_lower_cb = QCheckBox("Строчные буквы (a-z)")
@@ -346,11 +384,18 @@ class MainWindow(QMainWindow):
         self.use_lower_cb.setChecked(self.config.get("use_lower", bool))
         self.use_digits_cb.setChecked(self.config.get("use_digits", bool))
         self.use_special_cb.setChecked(self.config.get("use_special", bool))
+
+        # ---------- ЧЕКБОКС ИНКОГНИТО ----------
+        self.incognito_cb = QCheckBox("Режим Инкогнито (очищать пароли при выходе)")
+        self.incognito_cb.setStyleSheet(checkbox_style)
+        self.incognito_cb.stateChanged.connect(self.save_incognito_state)
+        self.incognito_cb.setChecked(self.incognito_mode)
+        self.checks_layout.addWidget(self.incognito_cb)
+
         content_layout.addLayout(self.checks_layout)
+        content_layout.addSpacing(10)
 
-        # ---------- КНОПКИ ДЕЙСТВИЙ (СДВИНУТЫ НИЖЕ) ----------
-        content_layout.addSpacing(10)   # отступ перед кнопками, чтобы отделить их от чекбоксов
-
+        # Кнопки
         btn_row1 = QHBoxLayout()
         gen_btn = QPushButton("ГЕНЕРИРОВАТЬ")
         gen_btn.setStyleSheet(
@@ -416,7 +461,7 @@ class MainWindow(QMainWindow):
         btn_row2.addWidget(export_btn)
         content_layout.addLayout(btn_row2)
 
-        # ---------- ВОДЯНОЙ ЗНАК ----------
+        # Водяной знак
         signature = QLabel("by MrKhaimi")
         signature.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
         signature.setStyleSheet("""
@@ -443,7 +488,51 @@ class MainWindow(QMainWindow):
         self.hide()
         self.show()
 
-    # ---------- НОВЫЙ МЕТОД: ПЕРЕКЛЮЧЕНИЕ РЕЖИМА ----------
+    # ---------- QR‑КОД ----------
+    def show_qr(self, field):
+        password = field.text()
+        if not password:
+            return
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(password)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="#f39c12", back_color="#0b0c10")
+        buf = io.BytesIO()
+        img.save(buf, format='PNG')
+        buf.seek(0)
+        pixmap = QPixmap()
+        pixmap.loadFromData(buf.read())
+
+        dlg = QDialog(self)
+        dlg.setWindowTitle("QR‑код пароля")
+        dlg.setMinimumSize(300, 300)
+        dlg.setStyleSheet("QDialog { background: #0b0c10; }")
+        layout = QVBoxLayout()
+        label = QLabel()
+        label.setPixmap(pixmap)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(label)
+        dlg.setLayout(layout)
+        dlg.exec()
+
+    # ---------- РЕЖИМ ИНКОГНИТО ----------
+    def save_incognito_state(self, state):
+        self.incognito_mode = bool(state)
+        self.config.save_checkbox("incognito", self.incognito_mode)
+
+    def closeEvent(self, event):
+        if self.incognito_mode:
+            for field, _, _, _ in self.password_widgets:
+                field.setText("")
+            self.history.clear()
+        event.accept()
+
+    # ---------- ОСТАЛЬНЫЕ МЕТОДЫ ----------
     def toggle_mode(self, checked):
         self.phrase_mode = checked
         if checked:
@@ -457,7 +546,6 @@ class MainWindow(QMainWindow):
             self.checks_layout.setEnabled(True)
             self.phrase_layout.setEnabled(False)
 
-    # ---------- НОВЫЕ МЕТОДЫ ----------
     def copy_with_sound(self, field):
         field.copy_to_clipboard()
         if self.sound_enabled:
@@ -489,7 +577,6 @@ class MainWindow(QMainWindow):
             )
         self.background.set_theme(self.current_theme)
 
-    # ---------- ОСТАЛЬНЫЕ МЕТОДЫ ----------
     def on_length_changed(self, value):
         self.config.save_slider("length", value)
 
@@ -560,6 +647,21 @@ class MainWindow(QMainWindow):
             field.setText(password)
             self.add_to_history(password)
 
+            if self.generator.is_common(password):
+                crack_text = "Внимание: пароль найден в словаре утечек!"
+                crack_label.setStyleSheet(
+                    "color: #ff4444; background: transparent; font-size: 12px; padding: 2px; border: none;"
+                )
+            else:
+                if self.current_theme == "cold":
+                    crack_label.setStyleSheet(
+                        "color: #d6eaf8; background: transparent; font-size: 12px; padding: 2px; border: none;"
+                    )
+                else:
+                    crack_label.setStyleSheet(
+                        "color: #ecf0f1; background: transparent; font-size: 12px; padding: 2px; border: none;"
+                    )
+
             p = {"Низкая":25, "Средняя":50, "Высокая":75, "Максимальная":100}[label]
             c = {"Низкая":"#c0392b", "Средняя":"#f1c40f", "Высокая":"#f39c12", "Максимальная":"#27ae60"}[label]
             strength_bar.setValue(p)
@@ -571,14 +673,6 @@ class MainWindow(QMainWindow):
             )
 
             crack_label.setText(crack_text)
-            if self.current_theme == "cold":
-                crack_label.setStyleSheet(
-                    "color: #d6eaf8; background: transparent; font-size: 12px; padding: 2px; border: none;"
-                )
-            else:
-                crack_label.setStyleSheet(
-                    "color: #ecf0f1; background: transparent; font-size: 12px; padding: 2px; border: none;"
-                )
 
     def refresh_animation(self):
         self.generate_passwords()
