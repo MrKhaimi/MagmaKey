@@ -20,3 +20,6 @@ requires-python = ">=3.8"
 Homepage = "https://github.com/MrKhaimi/MagmaKey"
 Repository = "https://github.com/MrKhaimi/MagmaKey.git"
 Issues = "https://github.com/MrKhaimi/MagmaKey/issues"
+
+[tool.setuptools]
+py-modules = ["main", "ui", "config", "password_generator", "lava_animation", "translations"]
