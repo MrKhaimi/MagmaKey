@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "MagmaKey"
+version = "1.0.5"
+description = "Генератор надёжных паролей с лавовой анимацией"
+authors = [{ name = "MrKhaimi" }]
+license = { text = "MIT" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/MrKhaimi/MagmaKey"
