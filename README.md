@@ -49,6 +49,8 @@
 - **PyInstaller** — сборка в EXE
 - **PyArmor** — обфускация и защита кода
 - **Inno Setup** — создание установщика
+Данный проект будет подписан с использованием сертификата, предоставленного фондом SignPath Foundation.
+
 In English --
 # 🔥 MagmaKey
 
@@ -102,7 +104,7 @@ The latest version is available in the [Releases](https://github.com/MrKhaimi/Ma
 - **PyInstaller** – EXE packaging
 - **PyArmor** – obfuscation and code protection
 - **Inno Setup** – installer creation
-
+This project will be signed using a certificate provided by the SignPath Foundation.
 ---
 
 ## 🛠 Build from source
