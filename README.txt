@@ -49,3 +49,68 @@
 - **PyInstaller** — сборка в EXE
 - **PyArmor** — обфускация и защита кода
 - **Inno Setup** — создание установщика
+In English --
+# 🔥 MagmaKey
+
+**A reliable password generator with lava lamp animation and neon design.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-blue?logo=windows)](../../releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/MrKhaimi/MagmaKey?label=latest%20release)](../../releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/MrKhaimi/MagmaKey/total?label=downloads)](../../releases)
+
+---
+
+## ✨ Features
+
+- 🌋 Hypnotic "lava lamp" animation (amber and cold themes)
+- 🔐 Generates three cryptographically strong passwords at once
+- 🧩 Two modes: classic passwords and memorable phrases (Diceware)
+- 📊 Strength evaluation: Weak / Medium / Strong / Maximum
+- 🔍 Detailed weak‑spot analysis (missing uppercase, digits, special chars, etc.)
+- ⏱ Crack time estimation for each password
+- 🧪 Offline check against a list of common leaked passwords (Top 100)
+- 📲 QR code for each password – instantly transfer to your phone
+- 👁 Toggle password visibility (show / hide)
+- 🔊 Sound confirmation on copy
+- 📋 One‑click copy to clipboard
+- 🔍 Built‑in password strength checker for any custom password
+- 📜 History of the last 12 generated passwords
+- 💾 Save passwords to a text file on your desktop
+- ⚙️ Flexible settings: password length (4–128), uppercase / lowercase letters, digits, special characters
+- 🔒 Incognito mode – automatically clears passwords and history on exit
+- 💾 Settings are automatically saved between sessions
+- 🖼️ Custom icon in the window and on the taskbar
+- 🛡️ Source code protection (PyArmor) and watermark "by MrKhaimi"
+- 🔒 **Fully offline** – never connects to the internet
+
+---
+
+## 📥 Download
+
+The latest version is available in the [Releases](https://github.com/MrKhaimi/MagmaKey/releases) section.
+
+- 🛠 **MagmaKey_Setup.exe** – Windows installer (with shortcuts)
+- 🟢 **MagmaKey.exe** – portable version (no installation required)
+
+---
+
+## 🖥️ Technologies
+
+- **Python 3.12+**
+- **PyQt6** – GUI and animation
+- **PyInstaller** – EXE packaging
+- **PyArmor** – obfuscation and code protection
+- **Inno Setup** – installer creation
+
+---
+
+## 🛠 Build from source
+
+```bash
+git clone https://github.com/MrKhaimi/MagmaKey.git
+cd MagmaKey
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
