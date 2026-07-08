@@ -14,7 +14,7 @@ class Config:
             "use_special": True,
             "theme": "amber",
             "sound": True,
-            "incognito": False       # ← новый ключ
+            "incognito": False
         }
 
     def get(self, key, type=str):
