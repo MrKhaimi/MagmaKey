@@ -2,8 +2,4 @@ PyQt6>=6.5.0
 qrcode[pil]
 pillow
 pyinstaller
-pyarmorPyQt6>=6.5.0
-qrcode[pil]
-pillow
-pyinstaller
 pyarmor
