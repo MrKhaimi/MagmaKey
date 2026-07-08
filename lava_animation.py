@@ -7,7 +7,6 @@ from PyQt6.QtGui import QPainter, QBrush, QRadialGradient, QColor
 from PyQt6.QtWidgets import QWidget
 
 class LavaBlob:
-    """Одна капля лавы (янтарная или холодная)."""
     def __init__(self, canvas_width, canvas_height, theme="amber"):
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
@@ -43,7 +42,6 @@ class LavaBlob:
 
 
 class LavaBackground(QWidget):
-    """Фон с анимированными пузырями, поддерживает две темы."""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAutoFillBackground(True)
@@ -62,7 +60,6 @@ class LavaBackground(QWidget):
         self.timer.start(45)
 
     def set_theme(self, theme):
-        """Переключает цветовую палитру пузырей."""
         if theme == self.theme:
             return
         self.theme = theme
