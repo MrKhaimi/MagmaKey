@@ -115,6 +115,7 @@ This project will be signed using a certificate provided by the SignPath Foundat
 ```bash
 git clone https://github.com/MrKhaimi/MagmaKey.git
 cd MagmaKey
+
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
