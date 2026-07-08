@@ -94,7 +94,6 @@ class PasswordGenerator:
 
     @staticmethod
     def is_common(password):
-        """Проверяет, входит ли пароль в список распространённых (утечек)."""
         return password.lower() in COMMON_PASSWORDS
 
 
@@ -157,7 +156,6 @@ class StrengthEvaluator:
 
     @staticmethod
     def analyze(password):
-        """Возвращает список замечаний по слабым местам пароля."""
         issues = []
         if len(password) < 8:
             issues.append("Слишком короткий (минимум 8 символов)")
@@ -173,7 +171,6 @@ class StrengthEvaluator:
             if password[i] == password[i+1] == password[i+2]:
                 issues.append("Повторяющиеся символы")
                 break
-        # Проверка по словарю утечек
         if PasswordGenerator.is_common(password):
             issues.append("Обнаружен в словаре утечек!")
         return issues
