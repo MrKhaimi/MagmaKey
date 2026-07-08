@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
         self.current_theme = self.config.get("theme")
         self.sound_enabled = self.config.get("sound", bool)
         self.phrase_mode = False
-        self.incognito_mode = self.config.get("incognito", bool)   # ← загрузка инкогнито
+        self.incognito_mode = self.config.get("incognito", bool)
 
         self.setWindowTitle("MagmaKey")
         self.setMinimumSize(700, 950)
@@ -290,7 +290,6 @@ class MainWindow(QMainWindow):
 
             self.password_widgets.append((field, strength_bar, vis_btn, crack_label))
 
-        # Переключатель режима
         mode_switch_layout = QHBoxLayout()
         self.mode_label = QLabel("Режим:")
         self.mode_label.setStyleSheet("color: #ecf0f1; background: transparent; border: none;")
@@ -308,7 +307,6 @@ class MainWindow(QMainWindow):
         mode_switch_layout.addStretch()
         content_layout.addLayout(mode_switch_layout)
 
-        # Длина (обычный режим)
         self.length_layout = QHBoxLayout()
         length_lbl = QLabel("Длина:")
         length_lbl.setStyleSheet("color: #ecf0f1; background: transparent; border: none;")
@@ -324,7 +322,6 @@ class MainWindow(QMainWindow):
         self.length_layout.addWidget(self.length_value)
         content_layout.addLayout(self.length_layout)
 
-        # Слова (режим фраз)
         self.phrase_layout = QHBoxLayout()
         phrase_lbl = QLabel("Слов:")
         phrase_lbl.setStyleSheet("color: #ecf0f1; background: transparent; border: none;")
@@ -340,7 +337,6 @@ class MainWindow(QMainWindow):
         self.phrase_layout.setEnabled(False)
         content_layout.addLayout(self.phrase_layout)
 
-        # Чекбоксы
         self.checks_layout = QVBoxLayout()
         self.use_upper_cb = QCheckBox("Заглавные буквы (A-Z)")
         self.use_lower_cb = QCheckBox("Строчные буквы (a-z)")
@@ -385,7 +381,6 @@ class MainWindow(QMainWindow):
         self.use_digits_cb.setChecked(self.config.get("use_digits", bool))
         self.use_special_cb.setChecked(self.config.get("use_special", bool))
 
-        # ---------- ЧЕКБОКС ИНКОГНИТО ----------
         self.incognito_cb = QCheckBox("Режим Инкогнито (очищать пароли при выходе)")
         self.incognito_cb.setStyleSheet(checkbox_style)
         self.incognito_cb.stateChanged.connect(self.save_incognito_state)
@@ -395,7 +390,6 @@ class MainWindow(QMainWindow):
         content_layout.addLayout(self.checks_layout)
         content_layout.addSpacing(10)
 
-        # Кнопки
         btn_row1 = QHBoxLayout()
         gen_btn = QPushButton("ГЕНЕРИРОВАТЬ")
         gen_btn.setStyleSheet(
@@ -461,7 +455,6 @@ class MainWindow(QMainWindow):
         btn_row2.addWidget(export_btn)
         content_layout.addLayout(btn_row2)
 
-        # Водяной знак
         signature = QLabel("by MrKhaimi")
         signature.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
         signature.setStyleSheet("""
@@ -488,7 +481,6 @@ class MainWindow(QMainWindow):
         self.hide()
         self.show()
 
-    # ---------- QR‑КОД ----------
     def show_qr(self, field):
         password = field.text()
         if not password:
@@ -520,7 +512,6 @@ class MainWindow(QMainWindow):
         dlg.setLayout(layout)
         dlg.exec()
 
-    # ---------- РЕЖИМ ИНКОГНИТО ----------
     def save_incognito_state(self, state):
         self.incognito_mode = bool(state)
         self.config.save_checkbox("incognito", self.incognito_mode)
@@ -532,7 +523,6 @@ class MainWindow(QMainWindow):
             self.history.clear()
         event.accept()
 
-    # ---------- ОСТАЛЬНЫЕ МЕТОДЫ ----------
     def toggle_mode(self, checked):
         self.phrase_mode = checked
         if checked:
