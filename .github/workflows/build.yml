@@ -29,7 +29,7 @@ jobs:
 
       - name: Build EXE
         run: |
-          python -m PyInstaller --onedir --windowed --icon=assets/magmakey.ico --name MagmaKey --collect-all PyQt6 main.py
+          python -m PyInstaller --onedir --windowed --icon=magmakey.ico --name MagmaKey --collect-all PyQt6 main.py
 
       - name: Upload artifact (portable folder)
         uses: actions/upload-artifact@v4
