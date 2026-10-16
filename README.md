@@ -4,8 +4,14 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Platform: Windows](https://img.shields.io/badge/platform-Windows-blue?logo=windows)](../../releases/latest)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/MrKhaimi/MagmaKey?label=latest%20release)](../../releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/MrKhaimi/MagmaKey/total?label=downloads)](../../releases)
+[![Stars](https://img.shields.io/github/stars/MrKhaimi/MagmaKey?style=social)](../../stargazers)
+[![Forks](https://img.shields.io/github/forks/MrKhaimi/MagmaKey?style=social)](../../network/members)
+[![Last commit](https://img.shields.io/github/last-commit/MrKhaimi/MagmaKey?label=last%20commit)](../../commits/main)
+[![Code size](https://img.shields.io/github/languages/code-size/MrKhaimi/MagmaKey?label=code%20size)](../../)
+[![Offline](https://img.shields.io/badge/offline-100%25-brightgreen?logo=wifi&logoColor=white)](#)
 
 ---
 
@@ -41,6 +47,7 @@
 - 🛠 **MagmaKey_Setup.exe** — установщик для Windows (с ярлыками)
 - 🟢 **MagmaKey.exe** — портативная версия (без установки)
 
+---
 
 ## 🖥️ Технологии
 
@@ -50,18 +57,24 @@
 - **PyArmor** — обфускация и защита кода
 - **Inno Setup** — создание установщика
 
-Данный проект будет подписан с использованием сертификата, предоставленного фондом SignPath Foundation.
 ---
 
 In English --
+
 # 🔥 MagmaKey
 
 **A reliable password generator with lava lamp animation and neon design.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Platform: Windows](https://img.shields.io/badge/platform-Windows-blue?logo=windows)](../../releases/latest)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/MrKhaimi/MagmaKey?label=latest%20release)](../../releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/MrKhaimi/MagmaKey/total?label=downloads)](../../releases)
+[![Stars](https://img.shields.io/github/stars/MrKhaimi/MagmaKey?style=social)](../../stargazers)
+[![Forks](https://img.shields.io/github/forks/MrKhaimi/MagmaKey?style=social)](../../network/members)
+[![Last commit](https://img.shields.io/github/last-commit/MrKhaimi/MagmaKey?label=last%20commit)](../../commits/main)
+[![Code size](https://img.shields.io/github/languages/code-size/MrKhaimi/MagmaKey?label=code%20size)](../../)
+[![Offline](https://img.shields.io/badge/offline-100%25-brightgreen?logo=wifi&logoColor=white)](#)
 
 ---
 
@@ -106,17 +119,3 @@ The latest version is available in the [Releases](https://github.com/MrKhaimi/Ma
 - **PyInstaller** – EXE packaging
 - **PyArmor** – obfuscation and code protection
 - **Inno Setup** – installer creation
-
-This project will be signed using a certificate provided by the SignPath Foundation.
----
-
-## 🛠 Build from source
-
-```bash
-git clone https://github.com/MrKhaimi/MagmaKey.git
-cd MagmaKey
-
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python main.py
