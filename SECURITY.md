@@ -18,7 +18,7 @@ If you discover a vulnerability in MagmaKey, please report it responsibly.
 ### How to report
 
 - **Do NOT create a public Issue** describing the vulnerability — this may put other users at risk.
-- Send an email to **matveiyt2006@gmail.com** with the subject `[SECURITY] MagmaKey vulnerability`.
+- Send an email to **mrkhaimi.magma@gmail.com** with the subject `[SECURITY] MagmaKey vulnerability`.
 - Or use the [Security → Report a vulnerability](https://github.com/MrKhaimi/MagmaKey/security/advisories/new) tab on GitHub.
 
 ### What to include
