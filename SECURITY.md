@@ -68,7 +68,7 @@ Thank you for helping keep MagmaKey secure! 🔐
 ### Как сообщить
 
 - **НЕ создавайте публичный Issue** с описанием уязвимости — это может подвергнуть риску других пользователей.
-- Отправьте письмо на **matveiyt2006@gmail.com** с темой `[SECURITY] MagmaKey vulnerability`.
+- Отправьте письмо на **mrkhaimi.magma@gmail.com** с темой `[SECURITY] MagmaKey vulnerability`.
 - Либо используйте вкладку [Security → Report a vulnerability](https://github.com/MrKhaimi/MagmaKey/security/advisories/new) на GitHub.
 
 ### Что указать в отчёте
