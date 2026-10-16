@@ -1,3 +1,9 @@
+<img width="702" height="982" alt="Снимок экрана 2026-10-16 155923" src="https://github.com/user-attachments/assets/3b6e4ed7-78bf-4e8c-ae81-c666c15d27ee" />
+<img width="552" height="382" alt="Снимок экрана 2026-10-16 155950" src="https://github.com/user-attachments/assets/387697b8-7892-4df2-9a94-a895c48cbeaa" />
+<img width="702" height="982" alt="Снимок экрана 2026-10-16 155954" src="https://github.com/user-attachments/assets/c3e01256-d025-46a7-8fbf-42ea4c44c05c" />
+<img width="514" height="544" alt="Снимок экрана 2026-10-16 155957" src="https://github.com/user-attachments/assets/271dc2da-c0d6-4040-8bec-05d7cbfda50d" />
+<img width="702" height="982" alt="Снимок экрана 2026-10-16 160012" src="https://github.com/user-attachments/assets/60f8fa2e-4ed1-4187-8475-22c98ab0306b" />
+<img width="502" height="250" alt="Снимок экрана 2026-10-16 155941" src="https://github.com/user-attachments/assets/d029b193-e80a-43f4-84c1-ab5f830cfbc6" />
 # 🔥 MagmaKey
 
 **Генератор надёжных паролей с лавовой анимацией и неоновым дизайном.**
