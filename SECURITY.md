@@ -6,8 +6,8 @@ We release security updates only for the latest stable version of MagmaKey.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+|  1.0.5   | :white_check_mark:|
+|  1.0.0  | :x:                |
 
 > The latest version is always available in the [Releases](https://github.com/MrKhaimi/MagmaKey/releases/latest) section.
 
@@ -56,8 +56,8 @@ Thank you for helping keep MagmaKey secure! 🔐
 
 | Версия  | Поддерживается     |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 1.0.5   | :white_check_mark: |
+| 1.0.0   | :x:                |
 
 > Актуальную версию всегда можно найти в разделе [Releases](https://github.com/MrKhaimi/MagmaKey/releases/latest).
 
